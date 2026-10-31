@@ -40,3 +40,6 @@ ORGANIZACION_DESARROLLO.md
 # generated native folders
 /ios
 /android
+
+# Credenciales locales de Firebase
+src/firebase/config.js
