@@ -80,8 +80,16 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcome}>Hola, viajero!</Text>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <Button title="Mapa 🗺️" onPress={() => navigation.navigate("Map")} />
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+          <Button title="Mapa" onPress={() => navigation.navigate("Map")} />
+          <Button
+            title="Comunidad"
+            onPress={() => navigation.navigate("Explore")}
+          />
+          <Button
+            title="Historial"
+            onPress={() => navigation.navigate("History")}
+          />
           <Button title="Salir" onPress={logoutUser} color="#555" />
         </View>
       </View>
@@ -117,6 +125,10 @@ export default function HomeScreen({ navigation }) {
               destino={item}
               onVisitado={() => handleVisitado(item.id)}
               onDelete={() => handleEliminar(item.id)}
+              onToggleFavorito={async () => {
+                await toggleFavorito(item.id, item.esFavorito);
+                cargarDestinos();
+              }}
             />
           )}
           ListEmptyComponent={
