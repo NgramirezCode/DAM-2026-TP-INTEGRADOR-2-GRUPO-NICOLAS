@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -28,6 +29,10 @@ export default function HomeScreen({ navigation }) {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [destinoEditando, setDestinoEditando] = useState(null);
+  const [editNombre, setEditNombre] = useState("");
+  const [editDescripcion, setEditDescripcion] = useState("");
 
   const cargarDestinos = async () => {
     try {
@@ -63,24 +68,25 @@ export default function HomeScreen({ navigation }) {
   };
 
   const handleEditar = (item) => {
-    Alert.prompt(
-      "Editar Lugar",
-      "Ingresá el nuevo nombre del lugar:",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Guardar",
-          onPress: async (nuevoNombre) => {
-            if (nuevoNombre) {
-              await editarDestino(item.id, nuevoNombre, item.descripcion);
-              cargarDestinos();
-            }
-          },
-        },
-      ],
-      "plain-text",
-      item.nombre,
-    );
+    setDestinoEditando(item);
+    setEditNombre(item.nombre);
+    setEditDescripcion(item.descripcion);
+    setModalVisible(true);
+  };
+
+  const guardarEdicion = async () => {
+    if (!editNombre.trim() || !editDescripcion.trim()) {
+      Alert.alert("Error", "Completá todos los campos.");
+      return;
+    }
+    try {
+      await editarDestino(destinoEditando.id, editNombre, editDescripcion);
+      setModalVisible(false);
+      setDestinoEditando(null);
+      cargarDestinos();
+    } catch (error) {
+      Alert.alert("Error", "No se pudo editar el destino.");
+    }
   };
 
   const handleVisitado = async (id) => {
@@ -166,6 +172,46 @@ export default function HomeScreen({ navigation }) {
           }
         />
       )}
+
+      <Modal visible={modalVisible} animationType="fade" transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Editar Destino</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Nuevo nombre"
+              value={editNombre}
+              onChangeText={setEditNombre}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Nueva descripción"
+              value={editDescripcion}
+              onChangeText={setEditDescripcion}
+            />
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 10,
+              }}
+            >
+              <Button
+                title="Cancelar"
+                color="red"
+                onPress={() => setModalVisible(false)}
+              />
+              <Button
+                title="Guardar"
+                color="#28a745"
+                onPress={guardarEdicion}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -193,4 +239,22 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   empty: { textAlign: "center", marginTop: 20, color: "#888" },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+  },
 });
