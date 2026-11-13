@@ -3,6 +3,7 @@ import HomeScreen from "../screens/HomeScreen";
 import MapScreen from "../screens/MapScreen";
 import HistoryScreen from "../screens/HistoryScreen";
 import ExploreScreen from "../screens/ExploreScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,11 @@ export default function AppStack() {
         name="Explore"
         component={ExploreScreen}
         options={{ title: "Comunidad" }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ title: "Perfil de Usuario" }}
       />
     </Stack.Navigator>
   );
