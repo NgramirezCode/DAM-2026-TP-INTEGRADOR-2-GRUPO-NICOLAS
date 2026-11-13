@@ -4,10 +4,13 @@ export default function DestinoCard({
   destino,
   onVisitado,
   onDelete,
+  onEdit,
   onToggleFavorito,
   onAgregar,
   isHistory,
   isExplore,
+  onRecuperar,
+  yaAgregado,
 }) {
   return (
     <View style={styles.card}>
@@ -17,26 +20,32 @@ export default function DestinoCard({
       <Text style={styles.description}>{destino.descripcion}</Text>
 
       <View style={styles.buttonRow}>
+        {/* Botón de Home */}
         {!isHistory && !isExplore && (
           <>
             <Button title="✔ Visitado" onPress={onVisitado} color="green" />
+            <Button title="Editar" onPress={onEdit} color="#17a2b8" />
             <Button
-              title={destino.esFavorito ? "Quitar ⭐" : "Hacer ⭐"}
+              title={destino.esFavorito ? "Quitar ⭐" : "Favorito ⭐"}
               onPress={onToggleFavorito}
               color="#f0ad4e"
             />
           </>
         )}
-
-        {!isExplore && (
-          <Button title="Eliminar" onPress={onDelete} color="red" />
+        {/* Botón de Historial */}
+        {isHistory && (
+          <>
+            <Button title="↩ Recuperar" onPress={onRecuperar} color="#26b69c" />
+            <Button title="Eliminar" onPress={onDelete} color="red" />
+          </>
         )}
-
+        {/* Botón de Explorar */}
         {isExplore && (
           <Button
-            title="+ Agregar a mi lista"
+            title={yaAgregado ? "✅ Agregado" : "+ Agregar a mi lista"}
             onPress={onAgregar}
-            color="#007bff"
+            color={yaAgregado ? "gray" : "#007bff"}
+            disabled={yaAgregado}
           />
         )}
       </View>

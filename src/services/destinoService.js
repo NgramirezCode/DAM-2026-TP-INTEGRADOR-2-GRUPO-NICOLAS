@@ -67,6 +67,7 @@ export const getMisDestinosPendientes = async (userId) => {
   }
 };
 
+// Update
 export const marcarComoVisitado = async (destinoId) => {
   try {
     const destinoRef = doc(db, "destinos", destinoId);
@@ -79,6 +80,7 @@ export const marcarComoVisitado = async (destinoId) => {
   }
 };
 
+// Get historial
 export const getHistorialDestinos = async (userId) => {
   try {
     const q = query(
@@ -105,6 +107,7 @@ export const toggleFavorito = async (destinoId, estadoActual) => {
   }
 };
 
+// Get favoritos
 export const getFavoritosComunidad = async (miUserId) => {
   try {
     const q = query(
@@ -124,6 +127,34 @@ export const getFavoritosComunidad = async (miUserId) => {
   }
 };
 
+// Update
+export const marcarComoNoVisitado = async (destinoId) => {
+  try {
+    await updateDoc(doc(db, "destinos", destinoId), { visitado: false });
+  } catch (error) {
+    console.error("Error al recuperar destino: ", error);
+    throw error;
+  }
+};
+
+// Update
+export const editarDestino = async (
+  destinoId,
+  nuevoNombre,
+  nuevaDescripcion,
+) => {
+  try {
+    await updateDoc(doc(db, "destinos", destinoId), {
+      nombre: nuevoNombre,
+      descripcion: nuevaDescripcion,
+    });
+  } catch (error) {
+    console.error("Error al editar:", error);
+    throw error;
+  }
+};
+
+// Delete
 export const eliminarDestino = async (destinoId) => {
   try {
     const destinoRef = doc(db, "destinos", destinoId);

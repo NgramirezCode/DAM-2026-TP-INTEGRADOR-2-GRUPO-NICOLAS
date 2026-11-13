@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,23 +7,40 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
-import { getFavoritosComunidad, addDestino } from "../services/destinoService";
+import {
+  getFavoritosComunidad,
+  addDestino,
+  getMisDestinosPendientes,
+  getHistorialDestinos,
+} from "../services/destinoService";
 import DestinoCard from "../components/DestinoCard";
 
 export default function ExploreScreen() {
   const { user } = useAuth();
   const [comunidad, setComunidad] = useState([]);
+  const [misNombres, setMisNombres] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    cargarComunidad();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      cargarDatos();
+    }, []),
+  );
 
-  const cargarComunidad = async () => {
+  const cargarDatos = async () => {
     try {
-      const data = await getFavoritosComunidad(user.uid);
-      setComunidad(data);
+      setLoading(true);
+      const dataComunidad = await getFavoritosComunidad(user.uid);
+      const pendientes = await getMisDestinosPendientes(user.uid);
+      const historial = await getHistorialDestinos(user.uid);
+      const todosMisNombres = [...pendientes, ...historial].map(
+        (d) => d.nombre,
+      );
+
+      setMisNombres(todosMisNombres);
+      setComunidad(dataComunidad);
     } catch (error) {
       Alert.alert("Error", "No se pudo cargar la comunidad.");
     } finally {
@@ -43,6 +60,7 @@ export default function ExploreScreen() {
         "¡Agregado!",
         "Este destino ahora está en tu Home listo para visitar.",
       );
+      setMisNombres((prev) => [...prev, destino.nombre]);
     } catch (error) {
       Alert.alert("Error", "No se pudo agregar a tu lista.");
     }
@@ -65,13 +83,18 @@ export default function ExploreScreen() {
       <FlatList
         data={comunidad}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <DestinoCard
-            destino={item}
-            onAgregar={() => handleAgregarAMisTareas(item)}
-            isExplore={true}
-          />
-        )}
+        renderItem={({ item }) => {
+          const yaLoTengo = misNombres.includes(item.nombre);
+
+          return (
+            <DestinoCard
+              destino={item}
+              onAgregar={() => handleAgregarAMisTareas(item)}
+              isExplore={true}
+              yaAgregado={yaLoTengo}
+            />
+          );
+        }}
         ListEmptyComponent={
           <Text style={styles.emptyText}>
             No hay recomendaciones de la comunidad.

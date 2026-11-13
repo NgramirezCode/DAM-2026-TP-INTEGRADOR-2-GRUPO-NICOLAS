@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -15,6 +16,8 @@ import {
   getMisDestinosPendientes,
   marcarComoVisitado,
   eliminarDestino,
+  toggleFavorito,
+  editarDestino,
 } from "../services/destinoService";
 import DestinoCard from "../components/DestinoCard";
 import { logoutUser } from "../services/authService";
@@ -38,9 +41,11 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    cargarDestinos();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      cargarDestinos();
+    }, []),
+  );
 
   const handleCrearDestino = async () => {
     if (!nombre.trim() || !descripcion.trim()) {
@@ -55,6 +60,27 @@ export default function HomeScreen({ navigation }) {
     } catch (error) {
       Alert.alert("Error", "No se pudo crear el destino.");
     }
+  };
+
+  const handleEditar = (item) => {
+    Alert.prompt(
+      "Editar Lugar",
+      "Ingresá el nuevo nombre del lugar:",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Guardar",
+          onPress: async (nuevoNombre) => {
+            if (nuevoNombre) {
+              await editarDestino(item.id, nuevoNombre, item.descripcion);
+              cargarDestinos();
+            }
+          },
+        },
+      ],
+      "plain-text",
+      item.nombre,
+    );
   };
 
   const handleVisitado = async (id) => {
@@ -90,7 +116,11 @@ export default function HomeScreen({ navigation }) {
             title="Historial"
             onPress={() => navigation.navigate("History")}
           />
-          <Button title="Salir" onPress={logoutUser} color="#555" />
+          <Button
+            title="Perfil"
+            onPress={() => navigation.navigate("Profile")}
+            color="#555"
+          />
         </View>
       </View>
 
@@ -124,7 +154,7 @@ export default function HomeScreen({ navigation }) {
             <DestinoCard
               destino={item}
               onVisitado={() => handleVisitado(item.id)}
-              onDelete={() => handleEliminar(item.id)}
+              onEdit={() => handleEditar(item)}
               onToggleFavorito={async () => {
                 await toggleFavorito(item.id, item.esFavorito);
                 cargarDestinos();

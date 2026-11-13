@@ -11,6 +11,7 @@ import { useAuth } from "../context/AuthContext";
 import {
   getHistorialDestinos,
   eliminarDestino,
+  marcarComoNoVisitado,
 } from "../services/destinoService";
 import DestinoCard from "../components/DestinoCard";
 
@@ -31,6 +32,19 @@ export default function HistoryScreen() {
       Alert.alert("Error", "No se pudo cargar el historial.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRecuperar = async (id) => {
+    try {
+      await marcarComoNoVisitado(id);
+      setHistorial((prev) => prev.filter((item) => item.id !== id));
+      Alert.alert(
+        "Recuperado",
+        "El destino volvió a tu lista pendiente en el Home.",
+      );
+    } catch (error) {
+      Alert.alert("Error", "No se pudo recuperar el destino.");
     }
   };
 
@@ -57,6 +71,7 @@ export default function HistoryScreen() {
           <DestinoCard
             destino={item}
             onDelete={() => handleEliminar(item.id)}
+            onRecuperar={() => handleRecuperar(item.id)}
             isHistory={true}
           />
         )}
