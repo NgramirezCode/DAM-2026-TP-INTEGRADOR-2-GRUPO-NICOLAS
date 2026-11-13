@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  TouchableOpacity,
   Modal,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
@@ -112,21 +113,36 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcome}>Hola, viajero!</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
-          <Button title="Mapa" onPress={() => navigation.navigate("Map")} />
-          <Button
-            title="Comunidad"
+
+        {/* Nueva botonera en formato "Píldoras" debajo del título */}
+        <View style={styles.navButtonsContainer}>
+          <TouchableOpacity
+            style={styles.navBtn}
+            onPress={() => navigation.navigate("Map")}
+          >
+            <Text style={styles.navBtnText}>🗺️ Mapa</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navBtn}
             onPress={() => navigation.navigate("Explore")}
-          />
-          <Button
-            title="Historial"
+          >
+            <Text style={styles.navBtnText}>🌍 Comunidad</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navBtn}
             onPress={() => navigation.navigate("History")}
-          />
-          <Button
-            title="Perfil"
+          >
+            <Text style={styles.navBtnText}>📜 Historial</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.navBtnOutline}
             onPress={() => navigation.navigate("Profile")}
-            color="#555"
-          />
+          >
+            <Text style={styles.navBtnTextDark}>👤 Perfil</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -143,7 +159,10 @@ export default function HomeScreen({ navigation }) {
           value={descripcion}
           onChangeText={setDescripcion}
         />
-        <Button title="Agregar Destino" onPress={handleCrearDestino} />
+        <TouchableOpacity
+          title="Agregar Destino"
+          onPress={handleCrearDestino}
+        />
       </View>
 
       {loading ? (
@@ -198,12 +217,12 @@ export default function HomeScreen({ navigation }) {
                 marginTop: 10,
               }}
             >
-              <Button
+              <TouchableOpacity
                 title="Cancelar"
                 color="red"
                 onPress={() => setModalVisible(false)}
               />
-              <Button
+              <TouchableOpacity
                 title="Guardar"
                 color="#28a745"
                 onPress={guardarEdicion}
@@ -219,12 +238,39 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#fff" },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    marginBottom: 20,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+  },
+  welcome: {
+    fontSize: 28,
+    fontWeight: "900",
+    color: "#1a1a1a",
+    letterSpacing: -0.5,
     marginBottom: 15,
   },
-  welcome: { fontSize: 20, fontWeight: "bold" },
+  navButtonsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  navBtn: {
+    backgroundColor: "#0056b3",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+  },
+  navBtnOutline: {
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  navBtnText: { color: "#fff", fontWeight: "bold", fontSize: 13 },
+  navBtnTextDark: { color: "#333", fontWeight: "bold", fontSize: 13 },
   form: {
     marginBottom: 20,
     paddingBottom: 15,
