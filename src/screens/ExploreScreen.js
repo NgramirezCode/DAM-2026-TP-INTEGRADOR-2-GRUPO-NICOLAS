@@ -108,9 +108,11 @@ export default function ExploreScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#fff" },
   info: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
+    fontSize: 22,
+    fontWeight: "900",
+    color: "#1a1a1a",
+    marginBottom: 15,
+    letterSpacing: -0.5,
     textAlign: "center",
   },
   emptyText: { textAlign: "center", marginTop: 50, color: "gray" },
