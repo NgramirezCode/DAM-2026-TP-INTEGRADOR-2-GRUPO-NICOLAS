@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Alert,
   TextInput,
+  TouchableOpacity,
   Button,
   ActivityIndicator,
 } from "react-native";
@@ -110,7 +111,7 @@ export default function MapScreen() {
 
       {coordenadaTemp && (
         <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Nuevo Destino en Mapa</Text>
+          <Text style={styles.formTitle}>Nuevo Destino</Text>
           <TextInput
             style={styles.input}
             placeholder="Lugar"
@@ -124,12 +125,18 @@ export default function MapScreen() {
             onChangeText={setDescripcion}
           />
           <View style={styles.buttonRow}>
-            <Button
-              title="Cancelar"
-              color="red"
+            <TouchableOpacity
+              style={[styles.btn, styles.btnCancel]}
               onPress={() => setCoordenadaTemp(null)}
-            />
-            <Button title="Guardar" onPress={guardarDestinoDesdeMapa} />
+            >
+              <Text style={styles.btnText}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.btn, styles.btnSave]}
+              onPress={guardarDestinoDesdeMapa}
+            >
+              <Text style={styles.btnText}>Guardar</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -143,25 +150,44 @@ const styles = StyleSheet.create({
   map: { flex: 1 },
   formContainer: {
     position: "absolute",
-    bottom: 20,
+    bottom: 100,
     left: 20,
     right: 20,
     backgroundColor: "white",
-    padding: 15,
-    borderRadius: 10,
-    elevation: 5,
+    padding: 20,
+    borderRadius: 16,
+    elevation: 8,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
-  formTitle: { fontSize: 16, fontWeight: "bold", marginBottom: 10 },
+  formTitle: {
+    fontSize: 20,
+    fontWeight: "900",
+    marginBottom: 12,
+    color: "#2c3e50",
+  },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 8,
-    marginBottom: 10,
-    borderRadius: 5,
+    borderColor: "#e0e0e0",
+    padding: 12,
+    marginBottom: 12,
+    borderRadius: 8,
+    backgroundColor: "#f8f9fa",
   },
-  buttonRow: { flexDirection: "row", justifyContent: "space-between" },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+  },
+  btn: {
+    flex: 0.48,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  btnCancel: { backgroundColor: "#e74c3c" },
+  btnSave: { backgroundColor: "#2ecc71" },
+  btnText: { color: "white", fontWeight: "bold", fontSize: 16 },
 });
