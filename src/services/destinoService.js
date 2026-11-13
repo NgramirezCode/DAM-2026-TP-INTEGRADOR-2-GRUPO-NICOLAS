@@ -10,7 +10,12 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 
-export const addDestino = async (userId, nombre, descripcion) => {
+export const addDestino = async (
+  userId,
+  nombre,
+  descripcion,
+  coordenadas = null,
+) => {
   try {
     const docRef = await addDoc(collection(db, "destinos"), {
       userId,
@@ -18,11 +23,27 @@ export const addDestino = async (userId, nombre, descripcion) => {
       descripcion,
       visitado: false,
       esFavorito: false,
+      coordenadas,
       fechaCreacion: Date.now(),
     });
     return docRef.id;
   } catch (error) {
     console.error("Error al agregar destino: ", error);
+    throw error;
+  }
+};
+
+export const getTodosMisDestinos = async (userId) => {
+  try {
+    const q = query(collection(db, "destinos"), where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.map((documento) => ({
+      id: documento.id,
+      ...documento.data(),
+    }));
+  } catch (error) {
+    console.error("Error al obtener todos los destinos: ", error);
     throw error;
   }
 };
