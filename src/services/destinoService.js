@@ -79,6 +79,51 @@ export const marcarComoVisitado = async (destinoId) => {
   }
 };
 
+export const getHistorialDestinos = async (userId) => {
+  try {
+    const q = query(
+      collection(db, "destinos"),
+      where("userId", "==", userId),
+      where("visitado", "==", true),
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error al obtener historial: ", error);
+    throw error;
+  }
+};
+
+export const toggleFavorito = async (destinoId, estadoActual) => {
+  try {
+    await updateDoc(doc(db, "destinos", destinoId), {
+      esFavorito: !estadoActual,
+    });
+  } catch (error) {
+    console.error("Error al cambiar favorito: ", error);
+    throw error;
+  }
+};
+
+export const getFavoritosComunidad = async (miUserId) => {
+  try {
+    const q = query(
+      collection(db, "destinos"),
+      where("esFavorito", "==", true),
+    );
+    const snapshot = await getDocs(q);
+    const todosFavoritos = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return todosFavoritos.filter((destino) => destino.userId !== miUserId);
+  } catch (error) {
+    console.error("Error al obtener comunidad: ", error);
+    throw error;
+  }
+};
+
 export const eliminarDestino = async (destinoId) => {
   try {
     const destinoRef = doc(db, "destinos", destinoId);

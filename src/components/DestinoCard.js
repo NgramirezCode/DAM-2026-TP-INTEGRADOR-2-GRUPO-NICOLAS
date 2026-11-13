@@ -1,14 +1,44 @@
 import { View, Text, Button, StyleSheet } from "react-native";
 
-export default function DestinoCard({ destino, onVisitado, onDelete }) {
+export default function DestinoCard({
+  destino,
+  onVisitado,
+  onDelete,
+  onToggleFavorito,
+  onAgregar,
+  isHistory,
+  isExplore,
+}) {
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>{destino.nombre}</Text>
+      <Text style={styles.title}>
+        {destino.nombre} {destino.esFavorito && "⭐"}
+      </Text>
       <Text style={styles.description}>{destino.descripcion}</Text>
 
       <View style={styles.buttonRow}>
-        <Button title="Marcar Visitado" onPress={onVisitado} color="green" />
-        <Button title="Eliminar" onPress={onDelete} color="red" />
+        {!isHistory && !isExplore && (
+          <>
+            <Button title="✔ Visitado" onPress={onVisitado} color="green" />
+            <Button
+              title={destino.esFavorito ? "Quitar ⭐" : "Hacer ⭐"}
+              onPress={onToggleFavorito}
+              color="#f0ad4e"
+            />
+          </>
+        )}
+
+        {!isExplore && (
+          <Button title="Eliminar" onPress={onDelete} color="red" />
+        )}
+
+        {isExplore && (
+          <Button
+            title="+ Agregar a mi lista"
+            onPress={onAgregar}
+            color="#007bff"
+          />
+        )}
       </View>
     </View>
   );
@@ -23,18 +53,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
   },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 10,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
+  title: { fontSize: 18, fontWeight: "bold", marginBottom: 5 },
+  description: { fontSize: 14, color: "#666", marginBottom: 10 },
+  buttonRow: { flexDirection: "row", flexWrap: "wrap", gap: 5, marginTop: 10 },
 });
