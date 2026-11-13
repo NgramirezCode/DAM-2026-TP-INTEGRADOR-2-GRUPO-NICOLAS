@@ -19,7 +19,7 @@ import {
 import DestinoCard from "../components/DestinoCard";
 import { logoutUser } from "../services/authService";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const { user } = useAuth();
   const [destinos, setDestinos] = useState([]);
   const [nombre, setNombre] = useState("");
@@ -80,7 +80,10 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcome}>Hola, viajero!</Text>
-        <Button title="Salir" onPress={logoutUser} color="#555" />
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <Button title="Mapa 🗺️" onPress={() => navigation.navigate("Map")} />
+          <Button title="Salir" onPress={logoutUser} color="#555" />
+        </View>
       </View>
 
       <View style={styles.form}>
