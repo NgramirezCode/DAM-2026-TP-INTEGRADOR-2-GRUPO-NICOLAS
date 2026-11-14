@@ -159,10 +159,7 @@ export default function HomeScreen({ navigation }) {
           value={descripcion}
           onChangeText={setDescripcion}
         />
-        <TouchableOpacity
-          title="Agregar Destino"
-          onPress={handleCrearDestino}
-        />
+        <Button title="Agregar Destino" onPress={handleCrearDestino} />
       </View>
 
       {loading ? (
@@ -217,12 +214,12 @@ export default function HomeScreen({ navigation }) {
                 marginTop: 10,
               }}
             >
-              <TouchableOpacity
+              <Button
                 title="Cancelar"
                 color="red"
                 onPress={() => setModalVisible(false)}
               />
-              <TouchableOpacity
+              <Button
                 title="Guardar"
                 color="#28a745"
                 onPress={guardarEdicion}
